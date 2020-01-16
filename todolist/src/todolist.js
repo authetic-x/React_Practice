@@ -2,6 +2,8 @@ import React, {Fragment} from 'react';
 import "./style.css"
 import TodoItem from "./todoItem.js"
 
+import axios from "axios";
+
 class Todolist extends React.Component {
     constructor(props) {
         super(props);
@@ -67,6 +69,12 @@ class Todolist extends React.Component {
                 </ul>
             </Fragment>
         );
+    }
+
+    componentDidMount() {
+        axios.get("/api/todolist")
+            .then(() => {alert("success")})
+            .catch(() => {alert("error")});
     }
 }
 

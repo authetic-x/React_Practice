@@ -1,3 +1,12 @@
-.input {
-    border: 1px solid deepskyblue;
+.fade-enter {
+    opacity: 0;
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transition: opacity 1s ease-in;
+}
+
+.fade-enter-done {
+    opacity: 1;
 }
