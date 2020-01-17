@@ -1,81 +1,76 @@
-import React, {Fragment} from 'react';
-import "./style.css"
-import TodoItem from "./todoItem.js"
+import React from 'react';
+import 'antd/dist/antd.css';
+import { Input, Button, List } from 'antd';
 
-import axios from "axios";
+import store from "./store"
 
 class Todolist extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            inputValue: '',
-            list: ['hello']
-        }
+        this.state = store.getState();
+
+        this.handleStoreChange = this.handleStoreChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
-    }
-
-    handleInputChange(event) {
-        this.setState({
-            inputValue: event.target.value
-        });
-    }
-
-    handleBtnChange() {
-        this.setState((preState) => ({
-            inputValue: '',
-            list: [...preState.list, preState.inputValue]
-        }));
-    }
-
-    handleItemDelete(index) {
-        const list = [...this.state.list];
-        list.splice(index, 1);
-        this.setState({
-            list: list
-        });
-    }
-
-    getTodoItem() {
-        return this.state.list.map((item, index) => {
-            /* return <li key={index}
-                       onClick={this.handleItemDelete.bind(this, index)}
-                   >
-                        {item}
-                   </li> */
-                return <TodoItem content={item}
-                                 handleOnclick={this.handleItemDelete.bind(this, index)}
-                       />
-        })
+        this.handleBtnClick = this.handleBtnClick.bind(this);
+        // this.handleItemClick = this.handleItemClick.bind(this);
+        store.subscribe(this.handleStoreChange);
     }
 
     render() {
         return (
-            <Fragment>
+            <div style={{marginTop: 10, marginLeft: 10}}>
                 <div>
-                    {
-                        // comments 需单独一行
-                    }
-                    <label for="insertArea">Input: </label>
-                    <input 
-                        id="insertArea"
-                        className="input"
+                    <Input 
                         value={this.state.inputValue}
+                        placeholder="Basic usage" 
+                        style={{width: 300, marginRight: 10 }}
                         onChange={this.handleInputChange}
                     />
-                    <button onClick={(e) => this.handleBtnChange(e)}>Submit</button>
+                    <Button type="primary" onClick={this.handleBtnClick}>Submit</Button>
                 </div>
-                <ul>
-                    {this.getTodoItem()}
-                </ul>
-            </Fragment>
-        );
+                <List
+                    style={{marginTop: 10, width: 300}}
+                    bordered
+                    dataSource={this.state.list}
+                    renderItem={(item, index) => (
+                        <List.Item
+                            onClick={this.handleItemDelete.bind(this, index)}
+                        >
+                            {item}
+                        </List.Item>
+                    )}
+                />
+            </div>
+        )
     }
 
-    componentDidMount() {
-        axios.get("/api/todolist")
-            .then(() => {alert("success")})
-            .catch(() => {alert("error")});
+    handleInputChange(e) {
+        const action = {
+            type: "change_input_value",
+            value: e.target.value
+        }
+        store.dispatch(action);
+    }
+
+    handleStoreChange() {
+        this.setState(store.getState());
+    }
+
+    handleBtnClick(e) {
+        const action = {
+            type: "add_todo_item",
+            value: this.state.inputValue
+        }
+        store.dispatch(action);
+    }
+
+    handleItemDelete(index) {
+        const action = {
+            type: 'delete_todo_item',
+            index
+        }
+        store.dispatch(action);
     }
 }
 
-export default Todolist;
+export default Todolist
