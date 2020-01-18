@@ -1,8 +1,9 @@
 import React from 'react';
 import 'antd/dist/antd.css';
-import { Input, Button, List } from 'antd';
+import TodolistUI from "./todolistUI"
 
 import store from "./store"
+import {getTodoList} from "./store/actionCreator"
 
 class Todolist extends React.Component {
     constructor(props) {
@@ -12,36 +13,25 @@ class Todolist extends React.Component {
         this.handleStoreChange = this.handleStoreChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleBtnClick = this.handleBtnClick.bind(this);
-        // this.handleItemClick = this.handleItemClick.bind(this);
+        this.handleItemDelete = this.handleItemDelete.bind(this);
         store.subscribe(this.handleStoreChange);
     }
 
     render() {
         return (
-            <div style={{marginTop: 10, marginLeft: 10}}>
-                <div>
-                    <Input 
-                        value={this.state.inputValue}
-                        placeholder="Basic usage" 
-                        style={{width: 300, marginRight: 10 }}
-                        onChange={this.handleInputChange}
-                    />
-                    <Button type="primary" onClick={this.handleBtnClick}>Submit</Button>
-                </div>
-                <List
-                    style={{marginTop: 10, width: 300}}
-                    bordered
-                    dataSource={this.state.list}
-                    renderItem={(item, index) => (
-                        <List.Item
-                            onClick={this.handleItemDelete.bind(this, index)}
-                        >
-                            {item}
-                        </List.Item>
-                    )}
-                />
-            </div>
+            <TodolistUI 
+                list={this.state.list}
+                inputValue={this.state.inputValue}
+                handleInputChange={this.handleInputChange}
+                handleBtnClick={this.handleBtnClick}
+                handleItemDelete={this.handleItemDelete}
+            />
         )
+    }
+
+    componentDidMount() {
+        const action = getTodoList();
+        store.dispatch(action);
     }
 
     handleInputChange(e) {
@@ -61,6 +51,7 @@ class Todolist extends React.Component {
             type: "add_todo_item",
             value: this.state.inputValue
         }
+        console.log(arguments[0]);
         store.dispatch(action);
     }
 
