@@ -38,12 +38,20 @@ const defaultState = fromJS({
         id: 4,
         content: '简书大学堂',
         imgUrl: 'https://cdn2.jianshu.io/assets/web/banner-s-6-c4d6335bfd688f2ca1115b42b04c28a7.png',
-    }]
+    }],
+    showScroll: false,
 });
 
 export default (state = defaultState, action) => {
     switch(action.type) {
-        
+        case 'change_data':
+            // update state
+            // 注意从immutable引入普通js对象时，要调用fromJs()
+            return state;
+        case 'change_scrollShow_true':
+            return state.set('showScroll', true);
+        case 'change_scrollShow_false':
+            return state.set('showScroll', false);
         default:
             return state;
     }
