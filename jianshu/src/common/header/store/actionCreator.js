@@ -24,6 +24,10 @@ export const pageChange = () => ({
     type: cons.PAGE_CHANGE,
 });
 
+export const logout = () => ({
+    type: cons.LOGOUT,
+})
+
 export const getList = () => {
     return (dispatch) => {
         axios.get('/api/headerList.json').then((res) => {

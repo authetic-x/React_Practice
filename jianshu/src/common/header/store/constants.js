@@ -7,3 +7,5 @@ export const GET_LIST = 'get_list';
 export const MOUSE_CHANGE = 'mouse_change';
 
 export const PAGE_CHANGE = 'page_change';
+
+export const LOGOUT = 'logout';

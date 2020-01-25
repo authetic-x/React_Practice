@@ -23,7 +23,11 @@ class Header extends React.Component {
                 <Nav>
                     <NavItem className="left active">首页</NavItem>
                     <NavItem className="left d">下载app</NavItem>
-                    <NavItem className="right">登录</NavItem>
+                    {
+                        this.props.login ? 
+                        <NavItem className="right" onClick={this.props.logout}>退出</NavItem> : 
+                        <Link to='/login'><NavItem className="right">登录</NavItem></Link>
+                    }
                     <NavItem className="right">
                         <i className="iconfont">&#xe636;</i>
                     </NavItem>
@@ -106,6 +110,7 @@ const mapStateToProps = (state) => {
         list: state.getIn(['header', 'list']),
         page: state.getIn(['header', 'page']),
         mouseIn: state.getIn(['header', 'mouseIn']),
+        login: state.getIn(['login', 'login']),
     }
 }
 
@@ -132,6 +137,9 @@ const mapDispatchToProps = (dispatch) => {
             spinIcon.style.transform = 'rotate(' + (originAngle + 360) + '360deg)';
             dispatch(actionCreator.pageChange());
         },
+        logout() {
+            dispatch(actionCreator.logout());
+        }
     }
 }
 
