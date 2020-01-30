@@ -1,14 +1,9 @@
-import React, {createContext, lazy, Suspense} from 'react';
-
-const BatteryContext = createContext();
-
-const AboutComponent = lazy(() => import('./about'));
+import React from 'react';
+import Todolist from './todolist';
 
 function App() {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <AboutComponent />
-        </Suspense>
+        <Todolist />
     );
 }
 
