@@ -1,67 +1,137 @@
-import React from 'react';
-import 'antd/dist/antd.css';
-import TodolistUI from "./todolistUI"
+import React, { useCallback } from 'react';
+import "./todo.css";
+import { useState } from 'react';
+import { useRef } from 'react';
+import { useEffect } from 'react';
 
-import store from "./store"
-import {getTodoList} from "./store/actionCreator"
+let idSeq = Date.now();
 
-class Todolist extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = store.getState();
+function Control(props) {
+    const {addTodo} = props;
+    const inputRef = useRef();
 
-        this.handleStoreChange = this.handleStoreChange.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleBtnClick = this.handleBtnClick.bind(this);
-        this.handleItemDelete = this.handleItemDelete.bind(this);
-        store.subscribe(this.handleStoreChange);
-    }
-
-    render() {
-        return (
-            <TodolistUI 
-                list={this.state.list}
-                inputValue={this.state.inputValue}
-                handleInputChange={this.handleInputChange}
-                handleBtnClick={this.handleBtnClick}
-                handleItemDelete={this.handleItemDelete}
-            />
-        )
-    }
-
-    componentDidMount() {
-        const action = getTodoList();
-        store.dispatch(action);
-    }
-
-    handleInputChange(e) {
-        const action = {
-            type: "change_input_value",
-            value: e.target.value
+    const onSubmit = (e) => {
+        e.preventDefault();
+        const newText = inputRef.current.value.trim();
+        if (newText.length !== 0) {
+            addTodo({
+                id: ++idSeq,
+                text: newText,
+                complete: false,
+            });
         }
-        store.dispatch(action);
+        inputRef.current.value = '';
     }
 
-    handleStoreChange() {
-        this.setState(store.getState());
-    }
-
-    handleBtnClick(e) {
-        const action = {
-            type: "add_todo_item",
-            value: this.state.inputValue
-        }
-        console.log(arguments[0]);
-        store.dispatch(action);
-    }
-
-    handleItemDelete(index) {
-        const action = {
-            type: 'delete_todo_item',
-            index
-        }
-        store.dispatch(action);
-    }
+    return (
+        <div className="control">
+            <h1>todos</h1>
+            <form onSubmit={onSubmit}>
+                <input 
+                    ref={inputRef}
+                    type="text"
+                    className="new-todo"
+                    placeholder="what needs to be done?"
+                />
+            </form>
+        </div>
+    );
 }
 
-export default Todolist
+function TodoItem(props) {
+    const {todo, removeTodo, toggleTodo} = props;
+    const {id, text, complete} = todo;
+
+    const onChange = () => {
+        toggleTodo(id);
+    }
+
+    const onRemove = () => {
+        removeTodo(id);
+    }
+
+    return (
+        <li
+            className="todo-item"
+        >
+            <input 
+                type="checkbox"
+                onChange={onChange}
+                checked={complete}
+            />
+            <label className={complete ? 'complete' : ''}>{text}</label>
+            <button onClick={onRemove}>&#xd7;</button>
+        </li>
+    )
+}
+
+function Todos(props) {
+    const {todos, removeTodo, toggleTodo} = props;
+
+
+
+    return (
+        <ul className="todos">
+            {
+                todos.map((todo) => {
+                    return (
+                        <TodoItem 
+                            key={todo.id}
+                            todo={todo}
+                            removeTodo={removeTodo}
+                            toggleTodo={toggleTodo}
+                        />
+                    )
+                })
+            }
+        </ul>
+    );
+}
+
+const LS_KEY = '_$_LIST';
+
+export default function Todolist() {
+    const [todos, setTodos] = useState([]);
+
+    const addTodo = useCallback((todo) => {
+        setTodos(todos => [...todos, todo]);
+    }, []);
+
+    const removeTodo = useCallback((id) => {
+        setTodos(todos => todos.filter(todo => {
+            return todo.id !== id
+        }));
+    }, []);
+
+    const toggleTodo = useCallback((id) => {
+        setTodos(todos => todos.map(todo => {
+            return todo.id === id
+                    ? {
+                        ...todo,
+                        complete: !todo.complete
+                    } : todo;
+        }));
+    }, []);
+
+    useEffect(() => {
+        const todos = JSON.parse(localStorage.getItem(LS_KEY)) || [];
+        setTodos(todos);
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem(LS_KEY, JSON.stringify(todos));
+    }, [todos]);
+
+    return (
+        <div className="todo-list">
+            <Control 
+                addTodo={addTodo}
+            />
+            <Todos 
+                todos={todos}
+                removeTodo={removeTodo}
+                toggleTodo={toggleTodo}
+            />
+        </div>
+    );
+}
