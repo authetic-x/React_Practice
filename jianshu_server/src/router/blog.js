@@ -10,48 +10,63 @@ const handleBlogRouter = (req, res) => {
     const id = req.query.id || '';
 
     // get blog list
-    if (method === 'GET' && req.path === '/api/blog/list') {   
+    if (method === 'GET' && req.path === '/api/blog/list') {  
         const author = req.query.author || '';
         const keyword = req.query.keyword || '';
-        const listData = getList(author, keyword);
-
-        return new SuccessModel(listData);
+        
+        const res = getList(author, keyword);
+        return res.then(listData => {
+            return new SuccessModel(listData);
+        }).catch(err => {
+            return new ErrorModel(err);
+        });
     }
 
-    // get blog list
+    // get blog detail
     if (method === 'GET' && req.path === '/api/blog/detail') {
-        const article = getDetail(id);
+        const res = getDetail(id);
 
-        return new SuccessModel(article);
+        return res.then(article => {
+            return new SuccessModel(article);
+        }).catch(err => {
+            return new ErrorModel(err);
+        });
     }
 
     // create a blog
     if (method === 'POST' && req.path === '/api/blog/new') {
-        const data = newBlog(req.body);
-
-        return new SuccessModel(data);
+        req.body.author = "Miles";
+        const res = newBlog(req.body);
+        return res.then(data => {
+            return new SuccessModel(data);
+        });
     }
 
     // update a blog
     if (method === 'POST' && req.path === '/api/blog/update') {
-        const ok = updateBlog(id, req.body);
+        const res = updateBlog(id, req.body);
         
-        if (ok) {
-            return new SuccessModel('Update blog success');
-        } else {
-            return new ErrorModel('Update blog failed');
-        }
+        return res.then(ok => {
+            if (ok) {
+                return new SuccessModel('Update succeed');
+            } else {
+                return new ErrorModel('Update failed');
+            }
+        })
     }
 
     // delete a blog
     if (method === 'POST' && req.path === '/api/blog/del') {
-        const ok = delBlog(id);
+        const author = 'Miles';
+        const res = delBlog(id, author);
         
-        if (ok) {
-            return new SuccessModel('Delete blog success');
-        } else {
-            return new ErrorModel('Delete blog failed');
-        }
+        return res.then(ok => {
+            if (ok) {
+                return new SuccessModel("Delete succeed");
+            } else {
+                return new ErrorModel("Article had been deleted already");
+            }
+        });
     }
 }
 

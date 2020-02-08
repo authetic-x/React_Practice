@@ -1,18 +1,20 @@
-const { login } = require("../controller/login");
+const { loginCheck } = require("../controller/login");
 const { SuccessModel, ErrorModel } = require("../model/resModel");
 
 const handleUserRouter = (req, res) => {
     const method = req.method;
 
     if (method === 'POST' && req.path === '/api/user/login') {
-        const { username, passwd } = req.body;
-        const ok = login(username, passwd);
+        const { username, password } = req.body;
+        const res = loginCheck(username, password);
         
-        if (ok) {
-            return new SuccessModel('login succeed');
-        } else {
-            return new ErrorModel('login failed');
-        }
+        return res.then(data => {
+            if (data.username) {
+                return new SuccessModel("Login succeed");
+            } else {
+                return new ErrorModel("Login failed");
+            }
+        });
     }
 }
 
