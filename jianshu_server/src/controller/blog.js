@@ -25,7 +25,7 @@ const newBlog = (blogData = {}) => {
     const title = blogData.title;
     const content = blogData.content;
     const author = blogData.author;
-    const createtime = Date.now();
+    const createtime = Date.now(); 
 
     const sql = `
         insert into blogs (title, content, author, createtime)

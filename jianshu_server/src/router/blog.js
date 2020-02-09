@@ -5,6 +5,12 @@ const { getList,
         delBlog } = require("../controller/blog");
 const { SuccessModel, ErrorModel } = require("../model/resModel");
 
+const loginCheck = (req) => {
+    if (!req.session.username) {
+        return Promise.resolve(new ErrorModel("尚未登录"));
+    }
+}
+
 const handleBlogRouter = (req, res) => {
     const method = req.method;
     const id = req.query.id || '';
@@ -35,7 +41,10 @@ const handleBlogRouter = (req, res) => {
 
     // create a blog
     if (method === 'POST' && req.path === '/api/blog/new') {
-        req.body.author = "Miles";
+        const result = loginCheck(req);
+        if (result) return result;
+
+        req.body.author = req.session.username;
         const res = newBlog(req.body);
         return res.then(data => {
             return new SuccessModel(data);

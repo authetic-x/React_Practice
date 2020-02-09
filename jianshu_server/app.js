@@ -2,6 +2,7 @@ const queryString = require("querystring");
 
 const handleBlogRouter = require("./src/router/blog");
 const handleUserRouter = require("./src/router/user");
+const { get } = require("./src/db/redis");
 
 // 处理 postData
 const getPostData = (req) => {
@@ -37,14 +38,59 @@ const serverHandler = (req, res) => {
 
     req.query = queryString.parse(url.split('?')[1]);
 
+    // 处理cookie
+    req.cookie = {};
+    const cookieStr = req.headers.cookie || '';
+    cookieStr.split(";").forEach((item) => {
+        if (!item) return;
+        const arr = item.split('=');
+        req.cookie[arr[0].trim()] = arr[1].trim();
+    });
+
+    // 处理session
+    if (!req.cookie.userId) {
+        req.session = {};
+    } else {
+        get(req.cookie.userId).then(data => {
+            req.session = data;
+            getPostData(req).then(postData => {
+                req.body = postData;
+        
+                // blog router
+                const blogResult = handleBlogRouter(req, res);
+                if (blogResult) {
+                    blogResult.then(blogData => {
+                        res.end(
+                            JSON.stringify(blogData)
+                        );
+                    });
+                    return;
+                }
+        
+                // user router
+                const userResult = handleUserRouter(req, res);
+                if (userResult) {
+                    userResult.then(userData => {
+                        res.end(
+                            JSON.stringify(userData)
+                        );
+                    });
+                    return;
+                }
+        
+                // 未命中返回404
+                res.writeHead(404, {"Content-type": "text/plain"});
+                res.write("404 not found\n");
+                res.end();
+            });
+        });
+        return;
+    }
+
     getPostData(req).then(postData => {
         req.body = postData;
 
-        /* const blogData = handleBlogRouter(req, res);
-        if (blogData) {
-            res.end(JSON.stringify(blogData));
-            return;
-        } */
+        // blog router
         const blogResult = handleBlogRouter(req, res);
         if (blogResult) {
             blogResult.then(blogData => {
@@ -55,11 +101,7 @@ const serverHandler = (req, res) => {
             return;
         }
 
-        /* const userData = handleUserRouter(req, res);
-        if (userData) {
-            res.end(JSON.stringify(userData));
-            return;
-        } */
+        // user router
         const userResult = handleUserRouter(req, res);
         if (userResult) {
             userResult.then(userData => {
