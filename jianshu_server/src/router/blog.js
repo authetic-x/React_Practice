@@ -19,6 +19,20 @@ const handleBlogRouter = (req, res) => {
     if (method === 'GET' && req.path === '/api/blog/list') {  
         const author = req.query.author || '';
         const keyword = req.query.keyword || '';
+
+        if (req.query.isAdmin === '1') {
+            if (!req.session.username) {
+                return Promise.resolve(new ErrorModel('Please login first'));
+            } else {
+                author = req.session.username;
+                const res = getList(author, keyword);
+                return res.then(listData => {
+                    return SuccessModel(listData);
+                }).catch(err => {
+                    return new ErrorModel(err);
+                });
+            }
+        }
         
         const res = getList(author, keyword);
         return res.then(listData => {
