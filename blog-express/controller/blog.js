@@ -1,4 +1,6 @@
-const {exec} = require("../db/mysql");
+const {
+    exec
+} = require("../db/mysql");
 
 const getList = (author, keyword) => {
     let sql = `select * from blogs where 1=1 `;
@@ -9,7 +11,7 @@ const getList = (author, keyword) => {
         sql += `and title like '%${keyword}%' `;
     }
     sql += `order by createtime desc;`;
-    
+
     // return a promise
     return exec(sql);
 }
@@ -25,7 +27,7 @@ const newBlog = (blogData = {}) => {
     const title = blogData.title;
     const content = blogData.content;
     const author = blogData.author;
-    const createtime = Date.now(); 
+    const createtime = Date.now();
 
     const sql = `
         insert into blogs (title, content, author, createtime)
@@ -40,7 +42,7 @@ const newBlog = (blogData = {}) => {
     });
 }
 
-const updateBlog = (blogData={}) => {
+const updateBlog = (blogData = {}) => {
     const id = blogData.id;
     const title = blogData.title;
     const content = blogData.content;
@@ -62,7 +64,7 @@ const delBlog = (id, author) => {
     const sql = `
         delete from blogs where id=${id} and author='${author}';
     `;
-    
+
     return exec(sql).then(delData => {
         if (delData.affectedRows > 0) {
             return true;

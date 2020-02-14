@@ -1,15 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const { getList, 
-        getDetail,
-        updateBlog,
-        delBlog,
-        newBlog } = require("../controller/blog");
-const { SuccessModel, ErrorModel } = require("../model/resModel");
+const {
+    getList,
+    getDetail,
+    updateBlog,
+    delBlog,
+    newBlog
+} = require("../controller/blog");
+const {
+    SuccessModel,
+    ErrorModel
+} = require("../model/resModel");
 const loginCheck = require("../middleware/loginCheck");
 
 // 获取文章详情
-router.get("/detail", loginCheck, (req, res) => {
+router.get("/detail", (req, res) => {
     const id = req.query.id;
     const result = getDetail(id);
     result.then(data => {
@@ -37,14 +42,16 @@ router.get('/list', (req, res) => {
 // 新建博客
 router.post('/new', loginCheck, (req, res) => {
     const blogData = {
-        author: req.body.author,
+        author: req.session.username,
         content: req.body.content,
         title: req.body.title
     }
     const result = newBlog(blogData);
     result.then(insertId => {
         if (insertId) {
-            res.json(new SuccessModel({insertId}));
+            res.json(new SuccessModel({
+                insertId
+            }));
         } else {
             res.json(new ErrorModel('new blog failed'));
         }
@@ -70,7 +77,7 @@ router.post("/update", loginCheck, (req, res) => {
 
 // 删除博客
 router.post("/delete", loginCheck, (req, res) => {
-    const id = req.body.id;
+    const id = req.query.id;
     const result = delBlog(id);
     result.then(isDel => {
         if (isDel) {

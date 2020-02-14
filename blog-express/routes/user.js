@@ -6,6 +6,7 @@ const { SuccessModel, ErrorModel } = require("../model/resModel");
 
 router.post("/login", (req, res) => {
     const {username, password} = req.body;
+    console.log(username, password);
     const result = login(username, password);
 
     result.then(data => {
