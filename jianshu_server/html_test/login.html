@@ -46,7 +46,7 @@
     <div class="container">
         <div class="form">
             <input class="input-item" id="username" type="text" />
-            <input class="input-item" id="password" type="password"/>
+            <input class="input-item" id="passwd" type="password"/>
             <input id="submit" type="button" value="submit"/>
         </div>
     </div>
@@ -65,7 +65,7 @@
 
         $('#submit').click(() => {
             const username = $('#username').val();
-            const password = $('password').val();
+            const password = $('#passwd').val();
             const data = {
                 username,
                 password
@@ -73,7 +73,7 @@
             const url = "/api/user/login";
 
             post(url, data).then(res => {
-                if (res.errno !== 0) {
+                if (res.errno === 0) {
                     location.href = '/admin.html';
                 } else {
                     alert(res.message);

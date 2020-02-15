@@ -13,10 +13,11 @@
         .container {
             width: 95%;
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 0 auto; 
         }
 
         h1 {
+            margin-top: 50px;
             padding-bottom: 10px;
             border-bottom: 1px solid #ccc;
         }
@@ -35,7 +36,7 @@
             background-color: #f1f1f1;
         }
 
-        table td:nth-child(1) {
+        .title-area {
             width: 300px;
         }
     </style>
@@ -44,7 +45,7 @@
     <div class="container">
         <h1>管理中心</h1>
         <p>
-            <a href="/api/blog/new">新建博客</a>
+            <a href="/new.html">新建博客</a>
         </p>
         <div style="margin-bottom: 10px;">
             <input id="text-keyword"/>
@@ -88,14 +89,16 @@
         const url = "/api/blog/list?isAdmin=1";
 
         get(url).then(res => {
+            console.log(res);
             if (res.errno !== 0) {
+                alert(res.message);
                 location.href = '/login.html';
             } else {
                 const data = res.data;
                 data.forEach(item => {
                     $("tbody").append(`
                         <tr>
-                            <th>
+                            <th class="title-area">
                                 <a href="/detail.html?id=${item.id}" target="_blank">
                                     ${item.title}
                                 </a>
@@ -110,7 +113,7 @@
 
         $("#btn-search").click(() => {
             const keyword = $("#text-keyword").val();
-            location.href = "/admin.html?keyword" + keyword;
+            location.href = "/admin.html?keyword=" + keyword;
         });
 
         $(".item-del").click(e => {
@@ -120,7 +123,14 @@
             }
 
             if (confirm("确认删除")) {
-                
+                const url = "/api/blog/delete?id=" + $target.attr('data-id');
+                post(url).then(res => {
+                    if (res.errno !== 0) {
+                        alert("操作错误");
+                        returnl
+                    }
+                    location.href = location.href;
+                });
             }
         });
     </script>
