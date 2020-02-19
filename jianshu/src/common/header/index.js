@@ -8,13 +8,17 @@ import {
     HeaderWrapper, Logo, Nav, NavItem, NavSearch,
     Addition, Button, SearchWrapper, SearchInfo, 
     SearchInfoTitle, SearchInfoSwitch, SearchInfoItem, 
-    SearchInfoList
+    SearchInfoList, UserCenter, DropMenu
 } from "./style";
 
 // 可将组件升级为函数形式的无状态组件，可提升性能
 class Header extends React.Component {
     render() {
         const {list, handleInputFocus} = this.props;
+        let loginBtn = null;
+        if (!this.props.login) {
+            loginBtn =<NavItem className="right" href='/sign_in'>登录</NavItem>
+        }
         return (
             <HeaderWrapper>
                 <Link to='/'>
@@ -23,11 +27,7 @@ class Header extends React.Component {
                 <Nav>
                     <NavItem className="left active">首页</NavItem>
                     <NavItem className="left d">下载app</NavItem>
-                    {
-                        this.props.login ? 
-                        <NavItem className="right" onClick={this.props.logout}>退出</NavItem> : 
-                        <Link to='/login'><NavItem className="right">登录</NavItem></Link>
-                    }
+                    { loginBtn }
                     <NavItem className="right">
                         <i className="iconfont">&#xe636;</i>
                     </NavItem>
@@ -48,18 +48,56 @@ class Header extends React.Component {
                         >
                             &#xe617;
                         </i>
-                        {this.getListArea(this.props)}
+                        {this.getListArea()}
                     </SearchWrapper>
                 </Nav>
                 <Addition>
-                    <Button className="writing">
-                        <i className="iconfont">&#xe6e5;</i>
-                        写文章
-                    </Button>
-                    <Button className="reg">注册</Button>
+                    <Link to="/write">
+                        <Button className="writing">
+                            <i className="iconfont">&#xe6e5;</i>
+                            写文章
+                        </Button>
+                    </Link>
+                    <Link to="/sign_up">
+                        {
+                            this.props.login ? this.showUserCenter() : 
+                                                <Button className="reg">注册</Button>
+                        }
+                    </Link>
                 </Addition>
             </HeaderWrapper>
         );
+    }
+
+    showUserCenter() {
+        return (
+            <UserCenter
+                className={this.props.mouseEnter ? 'open' : ''}
+                onMouseEnter={this.props.handleMouseEnter}
+                onMouseLeave={this.props.handleMouseLeave}
+            >
+                <a href="/user" className="avatar">
+                    <img src="./avatar.jpg" alt="avatar"/>
+                </a>
+                { this.showUserList() }
+            </UserCenter>
+        )
+    }
+
+    showUserList() {
+        if (this.props.mouseEnter) {
+            return (
+                <DropMenu>
+                    <li>
+                        <a href="/" onClick={this.props.logout}>
+                            <span>退出</span>
+                        </a>
+                    </li>
+                </DropMenu>
+            );
+        } else {
+            return null;
+        }
     }
 
     getListArea() {
@@ -111,6 +149,7 @@ const mapStateToProps = (state) => {
         page: state.getIn(['header', 'page']),
         mouseIn: state.getIn(['header', 'mouseIn']),
         login: state.getIn(['login', 'login']),
+        mouseEnter: state.getIn(['header', 'mouseEnter'])
     }
 }
 
@@ -126,6 +165,12 @@ const mapDispatchToProps = (dispatch) => {
         },
         handleMouseChange() {
             dispatch(actionCreator.mouseChange());
+        },
+        handleMouseEnter() {
+            dispatch(actionCreator.mouseEenter());
+        },
+        handleMouseLeave() {
+            dispatch(actionCreator.mouseLeave());
         },
         handlePageChange(spinIcon) {
             let originAngle = spinIcon.style.transform.replace(/[^0-9]/ig, '');

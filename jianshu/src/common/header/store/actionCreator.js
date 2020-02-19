@@ -20,6 +20,14 @@ export const mouseChange = () => ({
     type: cons.MOUSE_CHANGE,
 });
 
+export const mouseEenter = () => ({
+    type: cons.MOUSE_ENTER
+});
+
+export const mouseLeave = () => ({
+    type: cons.MOUSE_LEAVE
+});
+
 export const pageChange = () => ({
     type: cons.PAGE_CHANGE,
 });

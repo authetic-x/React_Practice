@@ -27,6 +27,7 @@ export const Nav = styled.div`
 `;
 
 export const NavItem = styled.div`
+    display: block;
     line-height: 56px;
     padding: 0 15px;
     font-size: 17px;
@@ -179,3 +180,83 @@ export const Button = styled.div`
         background: #ea6f5a;
     }
 `;
+
+export const UserCenter = styled.div`
+    float: right;
+    width: 80px;
+    height: 56px;
+    position: relative;
+    margin-right: 12px;
+
+    &:hover {
+        background: #f5f5f5;
+    }
+
+    .avatar {
+        display: block;
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        margin: 8px 24px 8px 16px;
+    }
+
+    .avatar:before {
+        position: absolute;
+        content: '';
+        top: 18px;
+        right: -14px;
+        border-top: 6px solid #999;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+    }
+
+    .avatar img {
+        width: 100%;
+        height: 100%;
+        border: 1px solid #ddd;
+        border-radius: 50%;
+    }
+`
+
+export const DropMenu = styled.ul`
+    display: block;
+    z-index: 1000;
+    position: absolute;
+    list-style: none;
+    top: 100%;
+    min-width: 160px;
+    text-align: left;
+    background: #fff;
+    padding: 5px 0;
+    border-radius: 0 0 4px 4px;
+    font-size: 14px;
+    border: 1px solid rgba(0,0,0,.15);
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+    border-color: transparent;
+    background-clip: padding-box;
+
+    li {
+        line-height: 20px;
+    }
+
+    li a {
+        display: block;
+        padding: 10px 20px;
+        text-align: center;
+        line-height: 30px;
+        text-decoration: none;
+        background-color: transparent;
+        cursor: pointer;
+        font-weight: 400px;
+
+    }
+
+    a:visited {
+        color: #000;
+    }
+
+    li a:hover {
+        background: #f5f5f5;
+    }
+`
