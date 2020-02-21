@@ -14,13 +14,9 @@ function SignUp(props) {
                 <LoginBox>
                     <Title>
                         <div className="normal-title">
-                            <Link to='/sign_in'>
-                                <a id='sign_in'>登录</a>
-                            </Link>
+                            <a href="/sign_in" id='sign_in'>登录</a>
                             <b>&bull;</b>
-                            <Link to='/sign_up'>
-                                <a id='sign_up' className="active">注册</a>
-                            </Link>
+                            <a href='/sign_up' id='sign_up' className="active">注册</a>
                         </div>
                     </Title>
                     <Form>

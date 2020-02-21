@@ -14,13 +14,9 @@ function SignIn(props) {
                 <LoginBox>
                     <Title>
                         <div className="normal-title">
-                            <Link to='/sign_in'>
-                                <a id='sign_in' className="active">登录</a>
-                            </Link>
+                            <a id='sign_in' href="/sign_in" className="active">登录</a>
                             <b>&bull;</b>
-                            <Link to='/sign_up'>
-                                <a id='sign_up'>注册</a>
-                            </Link>
+                            <a href="/sign_up" id='sign_up'>注册</a>
                         </div>
                     </Title>
                     <Form>
@@ -31,7 +27,10 @@ function SignIn(props) {
                             placeholder='密码' 
                             ref={(input) => {password = input}}
                         />
-                        <Button onClick={() => props.login(account, password)}>
+                        <Button 
+                            onClick={() => props.login(account, password)}
+                            onKeyPress={(e) => props.handleKeyPress(account, password, e)}
+                        >
                             登录
                         </Button>
                     </Form>
@@ -50,6 +49,11 @@ const mapProps = (state) => ({
 const mapDispatch = (dispatch) => ({
     login(accountEle, passwordEle) {
         dispatch(actionCreator.login(accountEle.value, passwordEle.value));
+    },
+    handleKeyPress(accountEle, passwordEle, event) {
+        if (event.keyCode === 13) {
+            dispatch(actionCreator.login(accountEle.value, passwordEle.value));
+        }
     }
 });
 

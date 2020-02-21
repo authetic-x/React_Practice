@@ -3,11 +3,12 @@ import Topic from './components/Topic';
 import List from './components/List';
 import Writer from './components/Writer';
 import Recommend from './components/Recommend';
+import Carousel from './components/Carousel';
 import {HomeWrapper, 
         HomeLeft, 
         HomeRight,
-        BackTop
-} from './style'
+        BackTop,
+} from './style';
 import { connect } from 'react-redux';
 import {getHomeInfo} from './store/actionCreator';
 
@@ -20,11 +21,7 @@ class Home extends React.Component {
         return (
             <HomeWrapper>
                 <HomeLeft>
-                    <img 
-                        className="banner-img"
-                        src="https://upload.jianshu.io/admin_banners/web_images/4877/2747180bb64b9e07c82df7fbeab44e280bed94d2.png?imageMogr2/auto-orient/strip|imageView2/1/w/1250/h/540" 
-                        alt=""
-                    />
+                    <Carousel />
                     <Topic />
                     <List />
                 </HomeLeft>
