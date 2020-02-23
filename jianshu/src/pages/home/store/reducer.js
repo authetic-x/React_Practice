@@ -41,6 +41,8 @@ const defaultState = fromJS({
     }],
     showScroll: false,
     newPosition: 0,
+    indexActive: true,
+    timer: null
 });
 
 export default (state = defaultState, action) => {
@@ -53,6 +55,11 @@ export default (state = defaultState, action) => {
             return state.set('showScroll', true);
         case 'change_scrollShow_false':
             return state.set('showScroll', false);
+        case 'change_index':
+            const indexActive = state.get('indexActive');
+            return state.set('indexActive', !indexActive);
+        case 'change_position':
+            return state.set('newPosition', action.data)
         default:
             return state;
     }
