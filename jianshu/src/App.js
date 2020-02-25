@@ -9,6 +9,7 @@ import Home from './pages/home'
 import Detail from './pages/detail/loadable'
 import SignIn from './pages/login/signin'
 import SignUp from './pages/login/signup'
+import Write from './pages/write'
 
 function App() {
   return (
@@ -30,6 +31,9 @@ function App() {
           </Route>
           <Route path='/sign_up' exact>
             <SignUp />
+          </Route>
+          <Route path='/write/:id' exact>
+            <Write />
           </Route>
         </BrowserRouter>
       </Provider>
