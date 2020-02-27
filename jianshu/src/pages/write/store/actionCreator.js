@@ -8,3 +8,8 @@ export const getListData = (dispatch) => {
         })
     })
 }
+
+export const editorChange = (data) => ({
+    type: 'init_editor',
+    data: data
+});

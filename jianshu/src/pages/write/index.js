@@ -3,20 +3,29 @@ import {
     WriteWrapper,
     ListWrapper,
     EditorWrapper,
-    ArticleList
+    ArticleList,
+    TitleEditor,
+    SaveWrapper,
+    ContentEditor
  } from './style'
 import {connect} from 'react-redux'
-import {withRouter} from 'react-router-dom'
-import { getListData } from './store/actionCreator'
+import {withRouter, Link} from 'react-router-dom'
+import { getListData, editorChange } from './store/actionCreator'
 
 class Write extends React.Component {
     componentDidMount() {
         // this.props.getArticleList();
+        const id = parseInt(this.props.match.params.id);
+        this.props.initEditor(this.props.articleList[id]);
+    }
+
+    componentDidUpdate() {
+        const id = parseInt(this.props.match.params.id);
+        this.props.initEditor(this.props.articleList[id]);
     }
 
     render() {
         const itemId = this.props.match.params.id;
-        console.log(itemId);
         return (
             <WriteWrapper>
                 <div className="sideBar">
@@ -31,19 +40,38 @@ class Write extends React.Component {
     
                             this.props.articleList.map(item => {
                                 return (
-                                    <li 
+                                    <Link 
+                                        to={`/write/${item.id}`}
                                         key={item.id}
-                                        className={itemId == item.id ? 'active':null }
                                     >
-                                        <span>{item.title}</span>
-                                    </li>
+                                        <li 
+                                            
+                                            className={itemId == item.id ? 'active':null }
+                                        >
+                                            <span>{item.title}</span>
+                                        </li>
+                                    </Link>
+                                    
                                 )
                             })
                         }
                     </ArticleList>
                 </ListWrapper>
                 <EditorWrapper>
-                    <span>Editor</span>
+                    <TitleEditor 
+                        ref={x => this.titleInput = x}
+                        value={this.props.editorTitle}
+                        onChange={this.props.handleTitleChange}
+                    />
+                    <SaveWrapper>
+                        <li>删除</li>
+                        <li>保存</li>
+                    </SaveWrapper>
+                    <ContentEditor 
+                        ref={x => this.contentInput = x}
+                        value={this.props.editorContent}
+                        onChange={this.props.handleContentChange}
+                    />
                 </EditorWrapper>
             </WriteWrapper>
         )
@@ -51,12 +79,29 @@ class Write extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    articleList: state.getIn(['write', 'articleList']).toJS()
+    articleList: state.getIn(['write', 'articleList']).toJS(),
+    editorTitle: state.getIn(['write', 'editorTitle']),
+    editorContent: state.getIn(['write', 'editorContent'])
 });
 
 const mapDispatchToProps = (dispatch) => ({
     getArticleList() {
         dispatch(getListData);
+    },
+    initEditor(data) {
+        dispatch(editorChange(data))
+    },
+    handleTitleChange(e) {
+        dispatch({
+            type: 'change_title',
+            data: e.target.value
+        })
+    },
+    handleContentChange(e) {
+        dispatch({
+            type: 'change_content',
+            data: e.target.value
+        })      
     }
 });
 

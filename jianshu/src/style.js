@@ -26,8 +26,15 @@ export const GlobalStyle = createGlobalStyle `
     footer, header, hgroup, menu, nav, section {
         display: block;
     }
+    html {
+        height: 100%;
+    }
     body {
         line-height: 1;
+        height: 100%;
+        #root {
+            height: 100%;
+        }
     }
     ol, ul {
         list-style: none;
