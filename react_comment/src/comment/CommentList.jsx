@@ -1,9 +1,19 @@
 import React from 'react'
+import Comment from './Comment'
 
-function CommentList(){
+function CommentList(props){
     return (
-        <div>
-            commentList
+        <div className="comment-list">
+            {
+                props.comments.map((item, idx) => {
+                    return (
+                        <Comment 
+                            key={idx}
+                            comment={item}
+                        />
+                    )
+                })
+            }
         </div>
     )
 }
