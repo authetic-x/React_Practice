@@ -1,6 +1,21 @@
-import React from 'react'
+import React, {useRef, useEffect} from 'react'
 
 function CommentInput(props){
+    const inputEl = useRef(null)
+    const textEl = useRef(null)
+
+    useEffect(() => {
+        textEl.current.focus()
+    }, [])
+
+    function _saveUsername(username) {
+        localStorage.setItem('username', username)
+    }
+
+    function handleInputBlur(e) {
+        _saveUsername(e.target.value)
+    }
+
     return (
         <div className="comment-input">
             <div className="comment-field">
@@ -9,6 +24,8 @@ function CommentInput(props){
                     <input 
                         value={props.username}
                         onChange={props.handleUsernameChange}
+                        ref={inputEl}
+                        onBlur={handleInputBlur}
                     />
                 </div>
             </div>
@@ -18,6 +35,7 @@ function CommentInput(props){
                     <textarea 
                         value={props.content}
                         onChange={props.handleContentChange}
+                        ref={textEl}
                     />
                 </div>
             </div>
